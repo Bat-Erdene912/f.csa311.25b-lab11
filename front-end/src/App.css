@@ -1,39 +1,27 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f0f4f8;
-  color: #333;
-  padding: 20px;
+  background-color: #f4f4f4;
   text-align: center;
+  margin: 20px;
 }
-
-.square {
-  background-color: #fff;
-  border: 2px solid #555;
-  float: left;
-  font-size: 36px;
-  font-weight: bold;
-  line-height: 60px;
-  height: 60px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
+.cell {
   width: 60px;
+  height: 60px;
+  font-size: 2rem;
+  margin: 5px;
   cursor: pointer;
 }
-
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: center;
 }
-
 button {
   margin-top: 20px;
   padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  font-size: 1rem;
+}
+#instructions {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
 }
