@@ -67,5 +67,9 @@ function calculateWinner(squares) {
   }
   return null;
 }
+<div className="status">
+  <p>Ээлж: {isXNext ? "X" : "O"}</p>
+  <p>{winner ? `Ялагч: ${winner}` : ""}</p>
+</div>
 
 export default App;
