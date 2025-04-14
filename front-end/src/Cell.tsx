@@ -1,17 +1,16 @@
 import React from 'react';
-import { Cell } from './game';
 
-interface Props {
-  cell: Cell
-}
+type CellProps = {
+  value: string | null;
+  onClick: () => void;
+};
 
-class BoardCell extends React.Component<Props> {
-  render(): React.ReactNode {
-    const playable = this.props.cell.playable ? 'playable' : '';
-    return (
-      <div className={`cell ${playable}`}>{this.props.cell.text}</div>
-    )
-  }
-}
+const Cell: React.FC<CellProps> = ({ value, onClick }) => {
+  return (
+    <button className="cell" onClick={onClick}>
+      {value}
+    </button>
+  );
+};
 
-export default BoardCell;
+export default Cell;
