@@ -15,6 +15,7 @@ public class App extends NanoHTTPD {
     }
 
     private Game game;
+    private Game previousGame; // For undo functionality
 
     /**
      * Start the server at :8080 port.
@@ -23,30 +24,48 @@ public class App extends NanoHTTPD {
     public App() throws IOException {
         super(8080);
 
-        this.game = new Game();
+        this.game = new Game(); 
 
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        System.out.println("\nRunning!\n");
+        System.out.println("\nRunning on http://localhost:8080\n");
     }
 
     @Override
     public Response serve(IHTTPSession session) {
         String uri = session.getUri();
         Map<String, String> params = session.getParms();
+        
+        Response response;
+        
         if (uri.equals("/newgame")) {
+            this.previousGame = this.game;
             this.game = new Game();
+            GameState gameplay = GameState.forGame(this.game);
+            response = newFixedLengthResponse(Response.Status.OK, "application/json", gameplay.toString());
         } else if (uri.equals("/play")) {
-            // e.g., /play?x=1&y=1
-            this.game = this.game.play(Integer.parseInt(params.get("x")), Integer.parseInt(params.get("y")));
+            this.previousGame = this.game;
+            int x = Integer.parseInt(params.get("x"));
+            int y = Integer.parseInt(params.get("y"));
+            this.game = this.game.play(x, y);
+            // Ensure we're getting the updated player information after the move
+            GameState gameplay = GameState.forGame(this.game);
+            response = newFixedLengthResponse(Response.Status.OK, "application/json", gameplay.toString());
+        } else if (uri.equals("/undo")) {
+            if (this.previousGame != null) {
+                this.game = this.previousGame;
+                this.previousGame = null;
+            }
+            GameState gameplay = GameState.forGame(this.game);
+            response = newFixedLengthResponse(Response.Status.OK, "application/json", gameplay.toString());
+        } else {
+            response = newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found");
         }
-        // Extract the view-specific data from the game and apply it to the template.
-        GameState gameplay = GameState.forGame(this.game);
-        return newFixedLengthResponse(gameplay.toString());
-    }
-
-    public static class Test {
-        public String getText() {
-            return "Hello World!";
-        }
+        
+        // CORS headers
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        
+        return response;
     }
 }
