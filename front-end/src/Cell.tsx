@@ -1,16 +1,21 @@
 import React from 'react';
+import { Cell } from './game';
 
-type CellProps = {
-  value: string | null;
-  onClick: () => void;
-};
+interface BoardCellProps {
+  cell: Cell;
+}
 
-const Cell: React.FC<CellProps> = ({ value, onClick }) => {
-  return (
-    <button className="cell" onClick={onClick}>
-      {value}
-    </button>
-  );
-};
+class BoardCell extends React.Component<BoardCellProps> {
+  render() {
+    const { cell } = this.props;
+    const cellClass = `board-cell ${cell.text.toLowerCase()}`;
+    
+    return (
+      <div className={cellClass}>
+        {cell.text}
+      </div>
+    );
+  }
+}
 
-export default Cell;
+export default BoardCell;
